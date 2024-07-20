@@ -13,6 +13,7 @@ include(GoogleTest)
 
 add_executable(stdlib_test
   src/memory/unique_ptr.cpp
+  src/memory/default_delete.cpp
 )
 
 target_link_libraries(stdlib_test PRIVATE stdlib_lib)

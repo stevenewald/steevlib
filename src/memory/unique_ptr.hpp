@@ -1,11 +1,11 @@
 #pragma once
 
-#include <memory>
+#include "memory/default_delete.hpp"
 
 namespace steev
 {
 
-template<typename T, typename Deleter = std::default_delete<T>>
+template<typename T, typename Deleter = steev::default_delete<T>>
 class unique_ptr
 {
   T* pointer_;
