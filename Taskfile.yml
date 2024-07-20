@@ -1,0 +1,24 @@
+version: '3'
+
+vars:
+  RELEASE_BUILD: "false"
+  RELEASE_PRESET: "ci-ubuntu"
+
+tasks:  
+  init:
+    dir: .
+    vars:
+      PRESET: '{{if eq .RELEASE_BUILD "true"}}{{.RELEASE_PRESET}}{{else}}dev{{end}}'
+    preconditions:
+      - test -f CMakeUserPresets.json
+    cmds:
+      - cmake --preset={{.PRESET}}
+
+  build:
+    dir: .
+    vars:
+      CMAKE_SUFFIX: '{{if eq .RELEASE_BUILD "true"}}build --config Release{{else}}--preset=dev{{end}}'
+    preconditions:
+      - test -f CMakeUserPresets.json
+    cmds:
+      - cmake --build {{.CMAKE_SUFFIX}} -j 

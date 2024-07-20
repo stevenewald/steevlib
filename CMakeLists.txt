@@ -17,20 +17,20 @@ include(cmake/variables.cmake)
 
 add_library(
     stdlib_lib OBJECT
-    source/lib.cpp
+    src/lib.cpp
 )
 
 target_include_directories(
     stdlib_lib ${warning_guard}
     PUBLIC
-    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+    "\$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/src>"
 )
 
 target_compile_features(stdlib_lib PUBLIC cxx_std_23)
 
 # ---- Declare executable ----
 
-add_executable(stdlib_exe source/main.cpp)
+add_executable(stdlib_exe src/main.cpp)
 add_executable(stdlib::exe ALIAS stdlib_exe)
 
 set_property(TARGET stdlib_exe PROPERTY OUTPUT_NAME stdlib)
