@@ -10,7 +10,9 @@ Checks: "*,\
   -llvm-header-guard,\
   -llvm-include-order,\
   -llvmlibc-*,\
+  -modernize-use-trailing-return-type,\
   -modernize-use-nodiscard,\
+  -readability-identifier-naming,\
   -misc-non-private-member-variables-in-classes"
 WarningsAsErrors: ''
 CheckOptions:

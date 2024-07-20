@@ -5,6 +5,13 @@ vars:
   RELEASE_PRESET: "ci-ubuntu"
 
 tasks:  
+  deps:
+    dir: .
+    vars:
+      BUILD_TYPE: '{{if eq .RELEASE_BUILD "true"}}Release{{else}}Debug{{end}}'
+    cmds:
+      - conan install . -s build_type={{.BUILD_TYPE}} -b missing -pr cpp20 -pr:b cpp20
+
   init:
     dir: .
     vars:
@@ -22,3 +29,13 @@ tasks:
       - test -f CMakeUserPresets.json
     cmds:
       - cmake --build {{.CMAKE_SUFFIX}} -j 
+
+  test:
+    dir: '{{if eq .RELEASE_BUILD "true"}}./build{{else}}.{{end}}'
+    vars:
+      DEV_TEST_FLAGS: '--preset=dev'
+      RELEASE_TEST_FLAGS: '--output-on-failure --no-tests=error -C Release'
+      TEST_FLAGS: '{{if eq .RELEASE_BUILD "true"}}{{.RELEASE_TEST_FLAGS}}{{else}}{{.DEV_TEST_FLAGS}}{{end}}'
+    cmds:
+      - task: build
+      - ctest {{.TEST_FLAGS}}
