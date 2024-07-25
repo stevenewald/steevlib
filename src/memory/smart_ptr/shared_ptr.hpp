@@ -1,42 +1,15 @@
 #pragma once
 
-#include <atomic>
 #include <cassert>
 
+#include "control_block.hpp"
 #include "memory/default_delete.hpp"
+
 namespace steev
 {
 
-class control_block
-{
-  std::atomic<uint32_t> strong_count {1};
-  std::atomic<uint32_t> weak_count {0};
-
-public:
-  uint32_t get_refs() const noexcept { return strong_count; }
-  uint32_t get_weak_refs() const noexcept { return strong_count; }
-
-  void add_ref() noexcept { strong_count++; }
-
-  uint32_t remove_ref() noexcept
-  {
-    uint32_t new_strong_count = --strong_count;
-
-    if (new_strong_count == 0 && weak_count == 0) {
-      delete this;
-    }
-    return new_strong_count;
-  }
-
-  void add_weak_ref() noexcept { weak_count++; }
-
-  void remove_weak_ref() noexcept
-  {
-    if (--weak_count == 0 && strong_count == 0) {
-      delete this;
-    }
-  }
-};
+template<typename T>
+class weak_ptr;
 
 template<typename T, typename Deleter = default_delete<T>>
 class shared_ptr
@@ -52,7 +25,7 @@ public:
   {
   }
 
-  void swap(shared_ptr<T>& other) noexcept
+  void swap(shared_ptr& other) noexcept
   {
     std::swap(pointer, other.pointer);
     std::swap(ctrl, other.ctrl);
@@ -60,7 +33,7 @@ public:
 
   bool operator==(T* ptr) const noexcept { return pointer == ptr; }
 
-  shared_ptr(shared_ptr<T>&& other) noexcept
+  shared_ptr(shared_ptr&& other) noexcept
       : pointer(other.pointer)
       , ctrl(other.ctrl)
   {
@@ -68,7 +41,7 @@ public:
     other.ctrl = nullptr;
   }
 
-  shared_ptr(const shared_ptr<T>& other) noexcept
+  shared_ptr(const shared_ptr& other) noexcept
       : pointer(other.pointer)
       , ctrl(other.ctrl)
   {
@@ -77,31 +50,36 @@ public:
     }
   }
 
-  shared_ptr& operator=(shared_ptr<T>&& other) noexcept
+  shared_ptr& operator=(shared_ptr&& other) noexcept
   {
-    release();
-    pointer = other.pointer;
-    ctrl = other.ctrl;
+    if (this != &other) {
+      release();
+      pointer = other.pointer;
+      ctrl = other.ctrl;
 
-    other.pointer = nullptr;
-    other.ctrl = nullptr;
-
-    return *this;
-  }
-
-  shared_ptr& operator=(const shared_ptr<T>& other) noexcept
-  {
-    release();
-    pointer = other.pointer;
-    ctrl = other.ctrl;
-
-    if (pointer != nullptr) {
-      ctrl->add_ref();
+      other.pointer = nullptr;
+      other.ctrl = nullptr;
     }
+
     return *this;
   }
 
-  bool operator==(const shared_ptr<T>& other) const noexcept
+  shared_ptr& operator=(const shared_ptr& other) noexcept
+  {
+    if (this != &other) {
+      release();
+      pointer = other.pointer;
+      ctrl = other.ctrl;
+
+      if (pointer != nullptr) {
+        ctrl->add_ref();
+      }
+    }
+
+    return *this;
+  }
+
+  bool operator==(const shared_ptr& other) const noexcept
   {
     return pointer == other.pointer && ctrl == other.ctrl;
   }
@@ -155,6 +133,8 @@ private:
     pointer = nullptr;
     ctrl = nullptr;
   }
+
+  friend class weak_ptr<T>;
 };
 
 template<typename T, typename... Args>

@@ -1,4 +1,4 @@
-#include "memory/unique_ptr.hpp"
+#include "memory/smart_ptr/unique_ptr.hpp"
 
 #include <gtest/gtest.h>
 

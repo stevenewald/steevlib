@@ -1,4 +1,4 @@
-#include "memory/shared_ptr.hpp"
+#include "memory/smart_ptr/shared_ptr.hpp"
 #include <gtest/gtest.h>
 
 // Test construction and assignment
@@ -166,4 +166,3 @@ TEST(SharedPtrTest, NullSharedPtr) {
     EXPECT_EQ(sp1.use_count(), 0);
     EXPECT_EQ(sp2.use_count(), 0);
 }
-
