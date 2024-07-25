@@ -12,7 +12,7 @@ class unique_ptr
   Deleter deleter_ {};
 
 public:
-  explicit unique_ptr(T* ptr)
+  explicit unique_ptr(T* ptr = nullptr)
       : pointer_(ptr)
   {
   }
@@ -24,11 +24,6 @@ public:
     reset();
     pointer_ = ptr;
     return *this;
-  }
-
-  unique_ptr()
-      : pointer_ {nullptr}
-  {
   }
 
   unique_ptr& operator=(unique_ptr&& ptr) noexcept
