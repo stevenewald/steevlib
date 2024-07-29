@@ -16,6 +16,8 @@ add_executable(stdlib_test
   src/memory/default_delete.cpp
   src/memory/shared_ptr.cpp
   src/memory/weak_ptr.cpp
+
+  src/containers/vector.cpp
 )
 
 target_link_libraries(stdlib_test PRIVATE stdlib_lib)
