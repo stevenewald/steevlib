@@ -5,6 +5,15 @@
 
 namespace steev
 {
+
+class bad_weak_ptr : public std::exception
+{
+  const char* what() const noexcept override
+  {
+    return "bad_weak_ptr: attempt to create shared_ptr from expired weak_ptr";
+  }
+};
+
 template<typename T>
 class weak_ptr
 {
@@ -12,7 +21,7 @@ class weak_ptr
   control_block* ctrl;
 
 public:
-  weak_ptr(const shared_ptr<T>& other) noexcept
+  explicit weak_ptr(const shared_ptr<T>& other) noexcept
       : pointer(other.get())
       , ctrl(other.ctrl)
   {
@@ -84,10 +93,10 @@ public:
     return pointer == nullptr ? 0 : ctrl->get_refs();
   }
 
-  shared_ptr<T> lock() const noexcept
+  shared_ptr<T> lock() const
   {
     if (expired()) {
-      return nullptr;
+      throw bad_weak_ptr();
     };
 
     shared_ptr<T> shared;

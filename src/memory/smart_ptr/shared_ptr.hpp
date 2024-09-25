@@ -19,7 +19,7 @@ class shared_ptr
   Deleter deleter {};
 
 public:
-  shared_ptr(T* ptr)
+  explicit shared_ptr(T* ptr)
       : pointer(ptr)
       , ctrl(make_control_block(ptr))
   {

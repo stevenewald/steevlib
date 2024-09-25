@@ -57,43 +57,46 @@ TEST(WeakPtrTest, Lock)
   sp2.reset();
   sp3.reset();
 
-  steev::shared_ptr<int> sp4 = wp.lock();
-  EXPECT_EQ(sp4.get(), nullptr);
+  EXPECT_TRUE(wp.expired());
+  EXPECT_THROW(wp.lock(), steev::bad_weak_ptr);
 }
+
 // Test use_count
-TEST(WeakPtrTest, UseCount) {
-    steev::shared_ptr<int> sp1(new int(40));
-    steev::weak_ptr<int> wp1(sp1);
-    EXPECT_EQ(wp1.use_count(), 1);
+TEST(WeakPtrTest, UseCount)
+{
+  steev::shared_ptr<int> sp1(new int(40));
+  steev::weak_ptr<int> wp1(sp1);
+  EXPECT_EQ(wp1.use_count(), 1);
 
-    steev::shared_ptr<int> sp2 = wp1.lock();
-    EXPECT_EQ(wp1.use_count(), 2);
+  steev::shared_ptr<int> sp2 = wp1.lock();
+  EXPECT_EQ(wp1.use_count(), 2);
 
-    sp2.reset();
-    EXPECT_EQ(wp1.use_count(), 1);
+  sp2.reset();
+  EXPECT_EQ(wp1.use_count(), 1);
 
-    sp1.reset();
-    EXPECT_EQ(wp1.use_count(), 0);
+  sp1.reset();
+  EXPECT_EQ(wp1.use_count(), 0);
 }
 
 // Test reset
-TEST(WeakPtrTest, Reset) {
-    steev::shared_ptr<int> sp(new int(50));
-    steev::weak_ptr<int> wp(sp);
-    wp.reset();
-    EXPECT_EQ(wp.use_count(), 0);
-    EXPECT_TRUE(wp.expired());
-    EXPECT_EQ(wp.lock(), nullptr);
+TEST(WeakPtrTest, Reset)
+{
+  steev::shared_ptr<int> sp(new int(50));
+  steev::weak_ptr<int> wp(sp);
+  wp.reset();
+  EXPECT_EQ(wp.use_count(), 0);
+  EXPECT_TRUE(wp.expired());
+  EXPECT_THROW(wp.lock(), steev::bad_weak_ptr);
 }
 
 // Test swap
-TEST(WeakPtrTest, Swap) {
-    steev::shared_ptr<int> sp1(new int(60));
-    steev::shared_ptr<int> sp2(new int(70));
-    steev::weak_ptr<int> wp1(sp1);
-    steev::weak_ptr<int> wp2(sp2);
-    wp1.swap(wp2);
-    EXPECT_EQ(wp1.lock(), sp2);
-    EXPECT_EQ(wp2.lock(), sp1);
+TEST(WeakPtrTest, Swap)
+{
+  steev::shared_ptr<int> sp1(new int(60));
+  steev::shared_ptr<int> sp2(new int(70));
+  steev::weak_ptr<int> wp1(sp1);
+  steev::weak_ptr<int> wp2(sp2);
+  wp1.swap(wp2);
+  EXPECT_EQ(wp1.lock(), sp2);
+  EXPECT_EQ(wp2.lock(), sp1);
 }
-
