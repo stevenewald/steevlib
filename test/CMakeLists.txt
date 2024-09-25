@@ -16,6 +16,7 @@ add_executable(stdlib_test
   src/memory/default_delete.cpp
   src/memory/shared_ptr.cpp
   src/memory/weak_ptr.cpp
+  src/memory/pointer_traits.cpp
 
   src/containers/vector.cpp
 )

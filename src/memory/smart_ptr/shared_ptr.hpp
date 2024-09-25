@@ -16,7 +16,7 @@ class shared_ptr
 {
   T* pointer;
   control_block* ctrl;
-  Deleter deleter {};
+  [[no_unique_address]] Deleter deleter {};
 
 public:
   explicit shared_ptr(T* ptr)

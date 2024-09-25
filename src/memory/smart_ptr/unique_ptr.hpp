@@ -9,7 +9,7 @@ template<typename T, typename Deleter = steev::default_delete<T>>
 class unique_ptr
 {
   T* pointer_;
-  Deleter deleter_ {};
+  [[no_unique_address]] Deleter deleter_ {};
 
 public:
   explicit unique_ptr(T* ptr = nullptr)
