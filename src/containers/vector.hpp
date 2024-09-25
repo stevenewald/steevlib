@@ -2,9 +2,7 @@
 
 #include <algorithm>
 #include <cstddef>
-#include <cstdint>
 #include <cstring>
-#include <exception>
 #include <initializer_list>
 #include <iterator>
 #include <stdexcept>

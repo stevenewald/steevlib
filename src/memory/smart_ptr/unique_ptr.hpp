@@ -154,4 +154,16 @@ public:
 
   ~unique_ptr() { reset(); }
 };
+
+template<typename T, typename... Args>
+unique_ptr<T> make_unique(Args... args)
+{
+  return unique_ptr<T>(new T {std::forward<Args>(args)...});
+}
+
+template<typename T>
+unique_ptr<T> make_unique()
+{
+  return unique_ptr<T>(new T {});
+}
 }  // namespace steev

@@ -58,6 +58,20 @@ TEST(UniquePtrTest, Swap)
   EXPECT_EQ(*ptr2, 5);
 }
 
+TEST(UniquePtrTest, MakeUniqueTestWithArgs)
+{
+  steev::unique_ptr<int> ptr = steev::make_unique<int>(5);
+  EXPECT_NE(ptr, nullptr);
+  EXPECT_EQ(*ptr, 5);
+}
+
+TEST(UniquePtrTest, MakeUniqueTestWithNoArgs)
+{
+  steev::unique_ptr<int> ptr = steev::make_unique<int>();
+  EXPECT_NE(ptr, nullptr);
+  EXPECT_EQ(*ptr, 0);
+}
+
 // Custom deleter
 struct ArrayDeleter
 {
@@ -181,7 +195,6 @@ TEST(UniquePtrTest, NullptrAssignment)
   EXPECT_EQ(ptr, nullptr);
 }
 
-
 // Test for custom deleter with array
 struct CustomArrayDeleter
 {
@@ -190,7 +203,7 @@ struct CustomArrayDeleter
 
 TEST(UniquePtrTest, CustomArrayDeleter)
 {
-  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3]{1, 2, 3});
+  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3] {1, 2, 3});
   EXPECT_NE(ptr, nullptr);
   EXPECT_EQ(ptr[0], 1);
   EXPECT_EQ(ptr[2], 3);
@@ -207,8 +220,8 @@ TEST(UniquePtrTest, ResetWithNullptrAndCustomDeleter)
 // Test for array handling with custom deleter
 TEST(UniquePtrTest, ArrayHandlingWithCustomDeleter)
 {
-  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3]{1, 2, 3});
-  ptr.reset(new int[2]{4, 5});
+  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3] {1, 2, 3});
+  ptr.reset(new int[2] {4, 5});
   EXPECT_NE(ptr, nullptr);
   EXPECT_EQ(ptr[0], 4);
   EXPECT_EQ(ptr[1], 5);
@@ -220,7 +233,7 @@ TEST(UniquePtrTest, ArrayHandlingWithCustomDeleter)
 TEST(UniquePtrTest, ArrayBoolConversion)
 {
   steev::unique_ptr<int[]> ptr1;
-  steev::unique_ptr<int[]> ptr2(new int[3]{1, 2, 3});
+  steev::unique_ptr<int[]> ptr2(new int[3] {1, 2, 3});
   EXPECT_FALSE(ptr1);
   EXPECT_TRUE(ptr2);
 }
@@ -228,7 +241,7 @@ TEST(UniquePtrTest, ArrayBoolConversion)
 // Test for dereference with array
 TEST(UniquePtrTest, ArrayDereference)
 {
-  steev::unique_ptr<int[]> ptr(new int[3]{1, 2, 3});
+  steev::unique_ptr<int[]> ptr(new int[3] {1, 2, 3});
   EXPECT_EQ(ptr[0], 1);
   EXPECT_EQ(ptr[1], 2);
   EXPECT_EQ(ptr[2], 3);
@@ -241,7 +254,7 @@ TEST(UniquePtrTest, CustomDeleterRelease)
   int* rawPtr = ptr.release();
   EXPECT_EQ(ptr, nullptr);
   EXPECT_EQ(*rawPtr, 5);
-  delete rawPtr; // Ensure to delete the raw pointer manually
+  delete rawPtr;  // Ensure to delete the raw pointer manually
 }
 
 // Test for swap with custom deleter
@@ -271,12 +284,12 @@ TEST(UniquePtrTest, MultipleResets)
 // Test for array multiple resets
 TEST(UniquePtrTest, ArrayMultipleResets)
 {
-  steev::unique_ptr<int[]> ptr(new int[2]{1, 2});
-  ptr.reset(new int[3]{3, 4, 5});
+  steev::unique_ptr<int[]> ptr(new int[2] {1, 2});
+  ptr.reset(new int[3] {3, 4, 5});
   EXPECT_NE(ptr, nullptr);
   EXPECT_EQ(ptr[0], 3);
   EXPECT_EQ(ptr[2], 5);
-  ptr.reset(new int[1]{6});
+  ptr.reset(new int[1] {6});
   EXPECT_NE(ptr, nullptr);
   EXPECT_EQ(ptr[0], 6);
   ptr.reset();
@@ -306,7 +319,7 @@ TEST(UniquePtrTest, MoveAssignmentWithSelfGuard)
 // Test for get_deleter with array and custom deleter
 TEST(UniquePtrTest, ArrayCustomDeleterGetDeleter)
 {
-  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3]{1, 2, 3});
+  steev::unique_ptr<int[], CustomArrayDeleter> ptr(new int[3] {1, 2, 3});
   CustomArrayDeleter& del = ptr.get_deleter();
   (void)del;  // Just to use the deleter to avoid warnings
   EXPECT_EQ(ptr[0], 1);
@@ -316,12 +329,11 @@ TEST(UniquePtrTest, ArrayCustomDeleterGetDeleter)
 // Test for swap with array and custom deleter
 TEST(UniquePtrTest, ArrayCustomDeleterSwap)
 {
-  steev::unique_ptr<int[], CustomArrayDeleter> ptr1(new int[3]{1, 2, 3});
-  steev::unique_ptr<int[], CustomArrayDeleter> ptr2(new int[2]{4, 5});
+  steev::unique_ptr<int[], CustomArrayDeleter> ptr1(new int[3] {1, 2, 3});
+  steev::unique_ptr<int[], CustomArrayDeleter> ptr2(new int[2] {4, 5});
   ptr1.swap(ptr2);
   EXPECT_EQ(ptr1[0], 4);
   EXPECT_EQ(ptr1[1], 5);
   EXPECT_EQ(ptr2[0], 1);
   EXPECT_EQ(ptr2[2], 3);
 }
-
