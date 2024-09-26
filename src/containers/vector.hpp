@@ -260,8 +260,71 @@ public:
   T& front() { return data[0]; }
   T& back() { return data[size_ - 1]; }
 
+  bool empty() const noexcept { return size_ == 0; }
+  void clear() { size_ = 0; }
+
   std::size_t size() const { return size_; }
 
   ~vector() { delete[] data; }
+
+  void assign(std::size_t size, const T& element)
+  {
+    if (size > capacity_) {
+      reallocate(size);
+    }
+    for (std::size_t i = 0; i < size; i++) {
+      data[i] = element;
+    }
+    size_ = size;
+  }
+
+  void reserve(std::size_t new_capacity)
+  {
+    if (capacity_ < new_capacity) {
+      reallocate(new_capacity);
+    }
+    capacity_ = new_capacity;
+  }
+
+  void shrink_to_fit()
+  {
+    if (size_ < capacity_) {
+      reallocate(size_);
+    }
+  }
+
+  std::strong_ordering operator<=>(const steev::vector<T>& other) const noexcept
+  {
+    if (size_ != other.size_) {
+      return size_ <=> other.size_;
+    }
+
+    for (std::size_t i = 0; i < size_; i++) {
+      if (data[i] != other.data[i]) {
+        return data[i] <=> other.data[i];
+      }
+    }
+
+    return std::strong_ordering::equal;
+  }
+
+  bool operator==(const steev::vector<T>& other) const noexcept
+  {
+    return *this <=> other == std::strong_ordering::equal;
+  }
+
+  void swap(steev::vector<T>& other) noexcept
+  {
+    std::swap(data, other.data);
+    std::swap(size_, other.size_);
+    std::swap(capacity_, other.capacity_);
+  }
+
+  Iterator erase(Iterator it)
+  {
+    std::copy(it + 1, end(), it);
+    --size_;
+    return it;
+  }
 };
 }  // namespace steev

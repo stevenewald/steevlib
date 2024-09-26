@@ -1,4 +1,5 @@
 #include <stdexcept>
+
 #include "containers/vector.hpp"
 
 #include <gtest/gtest.h>
@@ -20,6 +21,16 @@ TEST_F(VectorTest, Size)
 TEST_F(VectorTest, Capacity)
 {
   EXPECT_GE(vec.capacity(), 5);
+}
+
+TEST_F(VectorTest, Empty)
+{
+  vec.clear();
+  EXPECT_TRUE(vec.empty());
+  vec.push_back(1);
+  EXPECT_FALSE(vec.empty());
+  vec.pop_back();
+  EXPECT_TRUE(vec.empty());
 }
 
 TEST_F(VectorTest, ResizeLarger)
@@ -71,7 +82,6 @@ TEST_F(VectorTest, Insert)
   EXPECT_EQ(vec.size(), 6);
 }
 
-/*
 TEST_F(VectorTest, Erase)
 {
   auto it = vec.erase(vec.begin() + 1);
@@ -132,31 +142,30 @@ TEST_F(VectorTest, ShrinkToFit)
 // Relational Operators Tests
 TEST_F(VectorTest, Equality)
 {
-  std::vector<int> otherVec = {1, 2, 3, 4, 5};
+  steev::vector<int> otherVec = {1, 2, 3, 4, 5};
   EXPECT_EQ(vec, otherVec);
 }
 
 TEST_F(VectorTest, Inequality)
 {
-  std::vector<int> otherVec = {1, 2, 3, 4};
+  steev::vector<int> otherVec = {1, 2, 3, 4};
   EXPECT_NE(vec, otherVec);
 }
 
 TEST_F(VectorTest, LessThan)
 {
-  std::vector<int> otherVec = {1, 2, 3, 4, 6};
+  steev::vector<int> otherVec = {1, 2, 3, 4, 6};
   EXPECT_LT(vec, otherVec);
 }
 
 // Swap Test
 TEST_F(VectorTest, Swap)
 {
-  std::vector<int> otherVec = {10, 20, 30};
+  steev::vector<int> otherVec = {10, 20, 30};
   vec.swap(otherVec);
-  EXPECT_EQ(vec, (std::vector<int> {10, 20, 30}));
-  EXPECT_EQ(otherVec, (std::vector<int> {1, 2, 3, 4, 5}));
+  EXPECT_EQ(vec, (steev::vector<int> {10, 20, 30}));
+  EXPECT_EQ(otherVec, (steev::vector<int> {1, 2, 3, 4, 5}));
 }
-
 // Move Semantics Tests
 TEST(VectorMoveTest, MoveConstructor)
 {
@@ -174,4 +183,3 @@ TEST(VectorMoveTest, MoveAssignment)
   EXPECT_EQ(target, (std::vector<int> {1, 2, 3}));
   EXPECT_TRUE(source.empty());
 }
-*/

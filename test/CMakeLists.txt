@@ -19,6 +19,7 @@ add_executable(stdlib_test
   src/memory/pointer_traits.cpp
 
   src/containers/vector.cpp
+  src/containers/array.cpp
 )
 
 target_link_libraries(stdlib_test PRIVATE stdlib_lib)
